@@ -13,7 +13,7 @@ class SinglyLinkedList {
   }
 
   push(val) {
-    let newNode = new Node(val);
+    const newNode = new Node(val);
 
     if (!this.head) {
       this.head = newNode;
@@ -98,7 +98,10 @@ class SinglyLinkedList {
       throw new Error("Invalid index!!");
     }
 
-    if (this.length === 0) return null;
+    if (this.length === 0) {
+      this.push(val);
+      return this;
+    }
     let targetNode = this.head;
 
     for (let i = 0; i <= this.length; i++) {
