@@ -5,12 +5,11 @@ interface INode {
 }
 
 class NodeTree implements INode {
-  left: INode | null;
-  right: INode | null;
-  constructor(public value: number) {
-    this.left = null;
-    this.right = null;
-  }
+  constructor(
+    public value: number,
+    public left: INode | null = null,
+    public right: INode | null = null
+  ) {}
 }
 
 interface IBinarySearchTree {
@@ -19,10 +18,7 @@ interface IBinarySearchTree {
 }
 
 class BinarySearchTree implements IBinarySearchTree {
-  root: INode | null;
-  constructor() {
-    this.root = null;
-  }
+  constructor(public root: INode | null = null) {}
 
   insert(value: number) {
     const newNode = new NodeTree(value);
@@ -87,17 +83,98 @@ class BinarySearchTree implements IBinarySearchTree {
 
     return targetNode;
   }
+
+  // ----------------------------------------------------------------
+  // Tree Traversal
+  // This way we can search in any tree structure no matter if the tree is binary or not
+  // Breadth-first search
+  // Remember in the queue { first in <---> first out }
+  BFS(value: number) {
+    const visitedNode: INode[] = [];
+    const queue: INode[] = [];
+    let firstValueInQueue: INode | undefined;
+    let targetNode: INode | string =
+      "The node you are looking for is not exist in the tree.";
+
+    if (this.root) queue.push(this.root);
+
+    while (queue.length > 0) {
+      firstValueInQueue = queue.shift();
+
+      if (firstValueInQueue) {
+        if (firstValueInQueue.value === value) targetNode = firstValueInQueue;
+        visitedNode.push(firstValueInQueue);
+        if (firstValueInQueue.left) queue.push(firstValueInQueue.left);
+        if (firstValueInQueue.right) queue.push(firstValueInQueue.right);
+      }
+    }
+
+    return targetNode;
+  }
+
+  // ----------------------------------------------------------------
+  // Depth-first search
+  // Pre-Order method
+  DFSPreOrder(value: number) {
+    const data: INode[] = [];
+    let targetNode: INode | string =
+      "The node you are looking for is not exist in the tree.";
+
+    const traversal = (node: INode) => {
+      data.push(node);
+      if (node.value === value) targetNode = node;
+      if (node.left) traversal(node.left);
+      if (node.right) traversal(node.right);
+    };
+
+    if (this.root) traversal(this.root);
+
+    return targetNode;
+  }
+
+  // Post-Order method
+  DFSPostOrder(value: number) {
+    const data: INode[] = [];
+    let targetNode: INode | string =
+      "The node you are looking for is not exist in the tree.";
+
+    const traversal = (node: INode) => {
+      if (node.value === value) targetNode = node;
+      if (node.left) traversal(node.left);
+      if (node.right) traversal(node.right);
+      data.push(node);
+    };
+
+    if (this.root) traversal(this.root);
+
+    return targetNode;
+  }
+
+  // In-Order method
+  DFSInOrder(value: number) {
+    const data: INode[] = [];
+    let targetNode: INode | string =
+      "The node you are looking for is not exist in the tree.";
+
+    const traversal = (node: INode) => {
+      if (node.value === value) targetNode = node;
+      if (node.left) traversal(node.left);
+      data.push(node);
+      if (node.right) traversal(node.right);
+    };
+
+    if (this.root) traversal(this.root);
+
+    return targetNode;
+  }
 }
 
 const tree = new BinarySearchTree();
-tree.insert(20);
-tree.insert(30);
-tree.insert(40);
-tree.insert(50);
-tree.insert(15);
 tree.insert(10);
-tree.insert(5);
-tree.insert(0);
-tree.find(-1);
+tree.insert(6);
+tree.insert(15);
+tree.insert(3);
+tree.insert(8);
+tree.insert(20);
 
 console.log(tree);
